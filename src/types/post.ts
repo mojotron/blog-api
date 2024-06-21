@@ -1,6 +1,8 @@
+import { ObjectId } from "mongoose";
+
 type PostType = {
   _id?: string;
-  authorId: string;
+  authorId: ObjectId;
   title: string;
   content: string;
   description: string;

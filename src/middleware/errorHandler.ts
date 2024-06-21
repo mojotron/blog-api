@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { CustomApiError, ValidationError } from "../errors/index";
 
 const errorHandler = (
   err: Error,
@@ -6,6 +7,18 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  // handle POST errors, includes input field names with array of error messages from validation object
+  if (err instanceof ValidationError) {
+    console.log("hello");
+
+    return res.status(err.statusCode).json({
+      status: "error",
+      msg: err.message,
+      statusCode: err.statusCode,
+      inputFieldError: err.inputFieldError,
+    });
+  }
+
   return res.status(500).json({ status: "error", msg: err.message });
 };
 
