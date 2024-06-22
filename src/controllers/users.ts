@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
+import { validationResult } from "express-validator";
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const validation = validationResult(req);
+
+    return res.json({ body: { ...req.body }, validation });
+
     return res
       .status(StatusCodes.OK)
       .json({ status: "success", mag: "signup" });
