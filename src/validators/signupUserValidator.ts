@@ -37,17 +37,38 @@ export const signupUserValidator: Schema = {
   },
   password: {
     in: ["body"],
-    isString: {},
-    notEmpty: {},
+    isString: {
+      errorMessage: `password must be a string`,
+    },
+    notEmpty: {
+      errorMessage: `password field must not be empty`,
+    },
     isLength: {
       options: { min: USER_LENGTHS.password.min },
       errorMessage: `password must have at least ${USER_LENGTHS.password.min} characters`,
     },
-    isLowercase: {
-      errorMessage: `password must have at least one lowercase letter`,
+    matches: {
+      options: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/,
+      errorMessage: `password must include uppercase, lowercase, digit and special character (-_$#)`,
     },
-    isUppercase: {
-      errorMessage: `password must have at least one uppercase letter`,
+    trim: true,
+    escape: true,
+  },
+  confirmPassword: {
+    in: ["body"],
+    custom: {
+      options: (confirmPassword, { req }) => {
+        const password = req.body.password;
+        if (password !== confirmPassword)
+          throw new Error("password and confirm password must be same");
+        else return true;
+      },
+    },
+    isString: {
+      errorMessage: `password must be a string`,
+    },
+    notEmpty: {
+      errorMessage: `password field must not be empty`,
     },
     trim: true,
     escape: true,
