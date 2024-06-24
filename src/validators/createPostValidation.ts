@@ -8,7 +8,7 @@ export const createPostValidator: Schema = {
       errorMessage: "title must be string",
     },
     isLength: {
-      options: { min: POST_LENGTHS.title.min, max: POST_LENGTHS.title.min },
+      options: { min: POST_LENGTHS.title.min, max: POST_LENGTHS.title.max },
       errorMessage: `title length must be between ${POST_LENGTHS.title.min} and ${POST_LENGTHS.title.max} characters`,
     },
     trim: true,
@@ -21,7 +21,7 @@ export const createPostValidator: Schema = {
       errorMessage: "content must be string",
     },
     isLength: {
-      options: { min: POST_LENGTHS.content.min, max: POST_LENGTHS.content.min },
+      options: { min: POST_LENGTHS.content.min, max: POST_LENGTHS.content.max },
       errorMessage: `content length must be between ${POST_LENGTHS.content.min} and ${POST_LENGTHS.content.max} characters`,
     },
     trim: true,
@@ -36,7 +36,7 @@ export const createPostValidator: Schema = {
     isLength: {
       options: {
         min: POST_LENGTHS.description.min,
-        max: POST_LENGTHS.description.min,
+        max: POST_LENGTHS.description.max,
       },
       errorMessage: `description length must be between ${POST_LENGTHS.description.min} and ${POST_LENGTHS.description.max} characters`,
     },
@@ -47,7 +47,7 @@ export const createPostValidator: Schema = {
   readingTime: {
     in: ["body"],
     isNumeric: {
-      errorMessage: "reading time (in minutes) must is required",
+      errorMessage: "reading time (in minutes) is required",
     },
   },
 };

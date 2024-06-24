@@ -4,11 +4,11 @@ export const POST_LENGTHS = {
     max: 50,
   },
   description: {
-    min: 50,
+    min: 25,
     max: 500,
   },
   content: {
-    min: 100,
+    min: 50,
     max: 5000,
   },
 };
