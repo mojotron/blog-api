@@ -7,8 +7,9 @@ import {
   editPost,
 } from "../controllers/posts";
 import { checkSchema } from "express-validator";
-import { createPostValidator } from "../validators/createPostValidation";
+// input validation
 import validateInputs from "../middleware/validateInputs";
+import createPostValidator from "../validators/createPostValidation";
 
 const router = Router();
 

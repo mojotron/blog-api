@@ -9,8 +9,6 @@ const errorHandler = (
 ) => {
   // handle POST errors, includes input field names with array of error messages from validation object
   if (err instanceof ValidationError) {
-    console.log("hello");
-
     return res.status(err.statusCode).json({
       status: "error",
       msg: err.message,

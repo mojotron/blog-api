@@ -1,7 +1,7 @@
 import { Schema } from "express-validator";
 import { POST_LENGTHS } from "../constants/post";
 
-export const createPostValidator: Schema = {
+const createPostValidator: Schema = {
   title: {
     in: ["body"],
     isString: {
@@ -51,3 +51,5 @@ export const createPostValidator: Schema = {
     },
   },
 };
+
+export default createPostValidator;

@@ -1,7 +1,7 @@
 import { Schema } from "express-validator";
 import { USER_LENGTHS } from "../constants/user";
 
-export const signupUserValidator: Schema = {
+const signupUserValidator: Schema = {
   email: {
     in: ["body"],
     notEmpty: {
@@ -74,3 +74,5 @@ export const signupUserValidator: Schema = {
     escape: true,
   },
 };
+
+export default signupUserValidator;

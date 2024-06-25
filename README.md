@@ -4,4 +4,5 @@ learning MERN stack by building blog
 
 # TODO
 
-- basic user
+- login, logout routes
+- not found middleware
