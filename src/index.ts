@@ -4,8 +4,7 @@ import "dotenv/config";
 // routes
 import routes from "./routes/index";
 // middleware
-import errorHandler from "./middleware/errorHandler";
-import mongoose from "mongoose";
+import { notFound, errorHandler } from "./middleware/errorMiddlewares";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,6 +12,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use(routes);
+
+app.use(notFound);
 app.use(errorHandler);
 
 const start = async () => {

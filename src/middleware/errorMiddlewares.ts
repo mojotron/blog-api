@@ -1,5 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomApiError, ValidationError } from "../errors/index";
+import { ValidationError } from "../errors/index";
+import { StatusCodes } from "http-status-codes";
+
+const notFound = (req: Request, res: Response, next: NextFunction) => {
+  return res.status(StatusCodes.NOT_FOUND).json({
+    status: "error",
+    msg: "resource not found",
+    statusCode: StatusCodes.NOT_FOUND,
+  });
+};
 
 const errorHandler = (
   err: Error,
@@ -20,4 +29,4 @@ const errorHandler = (
   return res.status(500).json({ status: "error", msg: err.message });
 };
 
-export default errorHandler;
+export { notFound, errorHandler };
