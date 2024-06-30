@@ -3,6 +3,9 @@ type UserType = {
   email: string;
   password: string;
   username: string;
+
+  generateToken: () => void;
+  comparePasswords: (enteredPassword: string) => Promise<Boolean>;
 };
 
 export default UserType;
