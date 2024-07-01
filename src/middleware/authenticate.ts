@@ -19,7 +19,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     if (error instanceof JsonWebTokenError) {
       next(new UnauthenticatedError("Invalid auth token provided"));
     }
-    next();
+    next(error);
   }
 };
 
