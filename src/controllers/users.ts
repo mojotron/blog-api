@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { matchedData } from "express-validator";
 import { createPassword } from "../utils/passwordHelpers";
 import User from "../models/user";
-import { ValidationError } from "../errors/index";
+import { UnauthenticatedError, ValidationError } from "../errors/index";
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -42,9 +42,22 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = matchedData(req);
-    return res
-      .status(StatusCodes.OK)
-      .json({ status: "success", mag: "login", data: { email, password } });
+    const user = await User.findOne({ email });
+    if (user === null) {
+      throw new UnauthenticatedError(`Invalid User Credentials`);
+    }
+    const passwordsMatch = await user?.comparePasswords(password);
+    if (passwordsMatch === false) {
+      throw new UnauthenticatedError(`Invalid User Credentials`);
+    }
+
+    const token = user?.generateToken();
+    return res.status(StatusCodes.OK).json({
+      status: "success",
+      mag: "login",
+      data: { email, password },
+      token,
+    });
   } catch (error) {
     return next(error);
   }

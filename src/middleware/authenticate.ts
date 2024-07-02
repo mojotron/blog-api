@@ -13,7 +13,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     const decoded = verify(token, process.env.JWT_SECRET as string);
     const tokenPayload = decoded as { userId: string };
     const customRequest = req as RequestWithUser;
-    customRequest.user = tokenPayload.userId;
+    customRequest.user = { userId: tokenPayload.userId };
     next();
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
