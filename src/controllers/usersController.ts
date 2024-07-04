@@ -2,8 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { matchedData } from "express-validator";
 import { createPassword } from "../utils/passwordHelpers";
-import User from "../models/user";
-import { UnauthenticatedError, ValidationError } from "../errors/index";
+import User from "../models/userSchema";
+import {
+  UnauthenticatedError,
+  ValidationError,
+  CustomApiError,
+} from "../errors/index";
+import generateToken from "../utils/generateToken";
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,19 +26,23 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
         username: ["username already in use"],
       });
     // create new user
-    const hashPassword = await createPassword(password);
-
     const newUser = await User.create({
       username,
       email,
-      password: hashPassword,
+      password,
     });
 
-    return res.status(StatusCodes.CREATED).json({
-      status: "success",
-      mag: "created new user account",
-      data: newUser, //TODO return auth token
-    });
+    if (newUser) {
+      generateToken(res, newUser._id);
+
+      return res.status(StatusCodes.CREATED).json({
+        status: "success",
+        mag: "created new user account",
+        data: newUser, //TODO return auth token
+      });
+    } else {
+      throw new CustomApiError(`Invalid user data`, StatusCodes.BAD_REQUEST);
+    }
   } catch (error) {
     return next(error);
   }
@@ -42,35 +51,34 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = matchedData(req);
-    const user = await User.findOne({ email });
-    if (user === null) {
-      throw new UnauthenticatedError(`Invalid User Credentials`);
-    }
-    const passwordsMatch = await user?.comparePasswords(password);
-    if (passwordsMatch === false) {
-      throw new UnauthenticatedError(`Invalid User Credentials`);
-    }
 
-    const token = user?.generateToken();
-    return res.status(StatusCodes.OK).json({
-      status: "success",
-      mag: "login",
-      data: { email, password },
-      token,
-    });
+    const user = await User.findOne({ email });
+
+    if (user && (await user.comparePasswords(password))) {
+      generateToken(res, user._id);
+
+      return res.status(StatusCodes.OK).json({
+        status: "success",
+        mag: "login",
+        data: { email, password },
+      });
+    } else {
+      throw new UnauthenticatedError(`Invalid User Credentials`);
+    }
   } catch (error) {
     return next(error);
   }
 };
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    return res
-      .status(StatusCodes.OK)
-      .json({ status: "success", mag: "logout" });
-  } catch (error) {
-    return next(error);
-  }
+  res.cookie(process.env.COOKIE_NAME as string, "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  
+  return res
+    .status(StatusCodes.OK)
+    .json({ status: "success", mag: "user logged out" });
 };
 
 export { signup, login, logout };

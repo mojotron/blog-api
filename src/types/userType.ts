@@ -4,7 +4,6 @@ type UserType = {
   password: string;
   username: string;
 
-  generateToken: () => void;
   comparePasswords: (enteredPassword: string) => Promise<Boolean>;
 };
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signup, login, logout } from "../controllers/users";
+import { signup, login, logout } from "../controllers/usersController";
 import { checkSchema } from "express-validator";
 // input validation
 import validateInputs from "../middleware/validateInputs";

@@ -1,10 +1,14 @@
 import { StatusCodes } from "http-status-codes";
 
 class CustomApiError extends Error {
-  statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+  statusCode: number;
 
-  constructor(message: string) {
+  constructor(
+    message: string,
+    statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR
+  ) {
     super(message);
+    this.statusCode = statusCode;
   }
 }
 

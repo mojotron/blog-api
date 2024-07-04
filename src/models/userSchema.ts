@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import type UserType from "../types/user";
+import type UserType from "../types/userType";
 import { compare, genSalt, hash } from "bcrypt";
-import { sign } from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema<UserType>(
   {
@@ -24,31 +23,16 @@ const userSchema = new mongoose.Schema<UserType>(
 );
 
 userSchema.pre("save", async function (next) {
-  try {
-    const salt = await genSalt(12);
-    const hashedPassword = await hash(this.password, salt);
-    this.password = hashedPassword;
+  if (!this.isModified("password")) {
     next();
-  } catch (error) {
-    throw error;
   }
+
+  const salt = await genSalt(12);
+  this.password = await hash(this.password, salt);
 });
 
-userSchema.methods.generateToken = function () {
-  const token = sign({ userId: this._id }, process.env.JWT_SECRET as string, {
-    expiresIn: process.env.JWT_LIFESPAN,
-  });
-
-  return token;
-};
-
 userSchema.methods.comparePasswords = async function (enteredPassword: string) {
-  try {
-    const isMatch = await compare(enteredPassword, this.password);
-    return isMatch;
-  } catch (error) {
-    throw error;
-  }
+  return await compare(enteredPassword, this.password);
 };
 
 const User = mongoose.model<UserType>("User", userSchema);
