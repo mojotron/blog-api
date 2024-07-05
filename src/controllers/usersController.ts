@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { matchedData } from "express-validator";
-import { createPassword } from "../utils/passwordHelpers";
 import User from "../models/userSchema";
 import {
   UnauthenticatedError,
@@ -9,6 +8,7 @@ import {
   CustomApiError,
 } from "../errors/index";
 import generateToken from "../utils/generateToken";
+import type RequestWithUser from "../types/RequestWithUser";
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -75,10 +75,25 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
     httpOnly: true,
     expires: new Date(0),
   });
-  
+
   return res
     .status(StatusCodes.OK)
     .json({ status: "success", mag: "user logged out" });
 };
 
-export { signup, login, logout };
+const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const request = req as RequestWithUser;
+    return res
+      .status(StatusCodes.OK)
+      .json({
+        status: "success",
+        msg: "get user profile",
+        user: { userId: request.user.userId },
+      });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export { signup, login, logout, getProfile };

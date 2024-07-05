@@ -1,7 +1,7 @@
 import { Router } from "express";
 import postRoutes from "./posts";
 import userRoutes from "./users";
-import authenticate from "../middleware/authenticate";
+import authenticate from "../middleware/authMiddleware";
 
 const router = Router();
 router.use("/api/v1/posts", authenticate, postRoutes);
