@@ -6,4 +6,6 @@ const commentScheme = new mongoose.Schema<CommentType>(
   { timestamps: true }
 );
 
-export default mongoose.model<CommentType>("Comment", commentScheme);
+const Comment = mongoose.model<CommentType>("Comment", commentScheme);
+
+export default Comment;

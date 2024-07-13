@@ -16,7 +16,7 @@ const validateInputs = (req: Request, res: Response, next: NextFunction) => {
       if (inputError[path] === undefined) inputError[path] = [msg];
       else inputError[path] = [...inputError[path], msg];
     });
-    throw new ValidationError("invalid post form values", inputError);
+    throw new ValidationError("Invalid Form Values", inputError);
   } else {
     next();
   }

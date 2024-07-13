@@ -38,7 +38,6 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(StatusCodes.CREATED).json({
         status: "success",
         mag: "created new user account",
-        data: newUser, //TODO return auth token
       });
     } else {
       throw new CustomApiError(`Invalid user data`, StatusCodes.BAD_REQUEST);
@@ -84,13 +83,11 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const request = req as RequestWithUser;
-    return res
-      .status(StatusCodes.OK)
-      .json({
-        status: "success",
-        msg: "get user profile",
-        user: { userId: request.user.userId },
-      });
+    return res.status(StatusCodes.OK).json({
+      status: "success",
+      msg: "get user profile",
+      user: { userId: request.user.userId },
+    });
   } catch (error) {
     return next(error);
   }
