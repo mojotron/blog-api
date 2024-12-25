@@ -1,6 +1,8 @@
 import express from "express";
-// config
+// prisma client
 import prismaClient from "./config/prisma.js";
+// routes
+import routes from "./routes/index.js";
 // error handlers
 import {
   notFoundMiddleware,
@@ -14,6 +16,7 @@ const app = express();
 app.use(express.json());
 
 // routing
+app.use(routes);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

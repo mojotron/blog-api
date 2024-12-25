@@ -1,7 +1,7 @@
 {
   "name": "blog-api-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.js",
   "type": "module",
   "scripts": {
     "dev": "node --no-warnings=ExperimentalWarning --loader ts-node/esm --watch src/server.ts"
