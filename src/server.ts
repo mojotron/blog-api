@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 // prisma client
-import prismaClient from "./config/prisma.js";
+import prisma from "./config/prisma.js";
 // routes
-
+import authRouter from "./routes/authRoutes.js";
 // error handlers
 import {
   notFoundMiddleware,
@@ -26,7 +26,7 @@ app.use(
   })
 );
 // routing
-
+app.use("/api/auth", authRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
@@ -37,7 +37,7 @@ const startServer = async () => {
     );
   } catch (error) {
     console.log(error);
-    await prismaClient.$disconnect();
+    await prisma.$disconnect();
     process.exit();
   }
 };
