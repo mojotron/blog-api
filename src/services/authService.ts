@@ -2,6 +2,8 @@ import prisma from "../config/prisma.js";
 import { CONFLICT } from "../constants/http.js";
 import appAssert from "../utils/appAssert.js";
 import { hashPassword } from "../utils/bcrypt.js";
+import { oneWeekFromNow, thirtyDaysFromNow } from "../utils/date.js";
+import { signJwtAccessToken, signJwtRefreshToken } from "../utils/jwt.js";
 
 type CreateAccountParams = {
   firstName: string;
@@ -32,11 +34,28 @@ export const createAccount = async (data: CreateAccountParams) => {
     data: {
       userId: user.id,
       type: "EmailVerification",
-      expiresAt: new Date(),
+      expiresAt: oneWeekFromNow(),
     },
   });
   // send mail
-  // create session
-  // sign tokens
-  // return user and tokens
+  // generate session
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      userAgent: data.userAgent,
+      expiresAt: thirtyDaysFromNow(),
+    },
+  });
+  // generate token
+  const accessToken = signJwtAccessToken({
+    userId: user.id,
+    sessionId: session.id,
+  });
+  const refreshToken = signJwtRefreshToken({ sessionId: session.id });
+
+  return {
+    user: { id: user.id, email: user.email },
+    accessToken,
+    refreshToken,
+  };
 };

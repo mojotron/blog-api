@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 // prisma client
 import prisma from "./config/prisma.js";
 // routes
@@ -25,6 +26,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 // routing
 app.use("/api/auth", authRouter);
 app.use(notFoundMiddleware);
